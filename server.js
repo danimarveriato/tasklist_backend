@@ -2,6 +2,9 @@ const restify = require('restify');
 
 const errs = require('restify-errors');
 
+//Importação da biblioteca que permite que a API seja vista por outros domínios
+const cors = require('cors');
+
 const server = restify.createServer({
   name: 'myapp',
   version: '1.0.0'
@@ -20,6 +23,8 @@ var knex = require('knex')({
 server.use(restify.plugins.acceptParser(server.acceptable));
 server.use(restify.plugins.queryParser());
 server.use(restify.plugins.bodyParser());
+//Habilitando o acesso de outros domínios na API
+server.use(cors());
 
 server.listen(8080, function () {
   console.log('%s listening at %s', server.name, server.url);
@@ -28,7 +33,7 @@ server.listen(8080, function () {
 //Rotas da API
 
 //Busca os dados da Tabela
-server.get('/', (req, res, next) => {
+server.get('/listar', (req, res, next) => {
     knex('task').then((dados) => {
         res.send(dados);
     }, next)
